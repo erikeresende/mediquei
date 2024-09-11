@@ -20,12 +20,16 @@ class PacienteForm(forms.ModelForm):
         }
 
 class ProntuarioForm(forms.ModelForm):
+    descricao = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+        max_length=50000
+    )
+
     class Meta:
         model = Prontuario
         fields = ['medico', 'paciente', 'data', 'descricao', 'assinatura_digital']
         widgets = {
             'medico': forms.Select(attrs={'class': 'form-control'}),
-            'descricao': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
             'data': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'assinatura_digital': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
         }
@@ -40,6 +44,7 @@ class MedicamentoForm(forms.ModelForm):
         }
 
 class ReceitaForm(forms.ModelForm):
+    assinatura_digital = forms.CharField(widget=forms.HiddenInput(), required=False)  # Campo oculto para a assinatura
     class Meta:
         model = Receita
         fields = ['medico', 'paciente', 'data', 'descricao', 'assinatura_digital']

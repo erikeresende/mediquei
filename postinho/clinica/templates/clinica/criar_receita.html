@@ -11,12 +11,12 @@
         <!-- Informações da Receita -->
         <div class="form-group">
             <label for="{{ form.medico.id_for_label }}">Médico:</label>
-            {{ form.medico }}  <!-- O campo de entrada será renderizado aqui -->
+            {{ form.medico }}
         </div>
 
         <div class="form-group">
             <label for="{{ form.paciente.id_for_label }}">Paciente:</label>
-            {{ form.paciente }} <!-- O campo de entrada será renderizado aqui -->
+            {{ form.paciente }}
         </div>
 
         <div class="form-group mb-4">
@@ -34,10 +34,12 @@
         <div class="form-group mb-4">
             <label>Medicamento</label>
             <div id="medicamentos-container">
-                <div class="medicamento-item mb-3">
-                    <input type="text" name="medicamentos[]" class="form-control mb-2" placeholder="Nome do medicamento" required/>
-                    <input type="text" name="dosagens[]" class="form-control" placeholder="Dosagem" required>
-                </div>
+                {% for form in formset %}
+                    <div class="medicamento-item mb-3">
+                        {{ form.medicamento.label_tag }} {{ form.medicamento }}  <!-- Campo de medicamento -->
+                        {{ form.dosagem.label_tag }} {{ form.dosagem }}  <!-- Campo de dosagem -->
+                    </div>
+                {% endfor %}
             </div>
             <button type="button" id="add-medicamento" class="btn btn-secondary">Adicionar Medicamento</button>
         </div>

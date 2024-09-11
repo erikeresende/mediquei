@@ -16,7 +16,8 @@
             {% if prontuario.assinatura_digital %}
                 <div class="mt-3">
                     <h5>Assinatura Digital:</h5>
-                    <img src="{{ prontuario.assinatura_digital }}" alt="Assinatura Digital" class="img-fluid" />
+                    <!-- Certifique-se de que o campo de assinatura é acessível e fornece a URL da imagem -->
+                    <img src="{{ prontuario.assinatura_digital.url }}" alt="Assinatura Digital" class="img-fluid" />
                 </div>
             {% else %}
                 <p>Assinatura Digital não disponível.</p>

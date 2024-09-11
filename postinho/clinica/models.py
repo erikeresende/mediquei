@@ -2,6 +2,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 import re
 from datetime import date
+import base64
+from django.core.files.base import ContentFile
 
 # Funções de validação
 def validate_crm(value):
@@ -13,7 +15,7 @@ def validate_data_nascimento(value):
         raise ValidationError('A data de nascimento não pode ser uma data futura.')
 
 def validate_file_extension(value):
-    if not value.name.endswith('.png'):
+    if not value.name.lower().endswith('.png'):
         raise ValidationError('O arquivo deve ser no formato PNG.')
 
 # Modelos
@@ -24,8 +26,9 @@ class Medico(models.Model):
 
     def __str__(self):
         return self.nome
+    
     class Meta:
-        ordering = ['nome']    
+        ordering = ['nome']
 
 class Paciente(models.Model):
     nome = models.CharField(max_length=255)
@@ -33,6 +36,7 @@ class Paciente(models.Model):
 
     def __str__(self):
         return self.nome
+    
     class Meta:
         verbose_name = 'Paciente'
         verbose_name_plural = 'Pacientes'
@@ -44,12 +48,14 @@ class Medicamento(models.Model):
     def __str__(self):
         return self.medicamento
 
+# No models.py
+
 class Receita(models.Model):
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, null=True, blank=True)
+    medico = models.ForeignKey(Medico, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     data = models.DateField()
     descricao = models.TextField(default='Nenhuma descrição disponível')
-    assinatura_digital = models.ImageField(upload_to='receitas/', blank=True, null=True, validators=[validate_file_extension])
+    assinatura_digital = models.ImageField(upload_to='assinaturas/', blank=True, null=True, validators=[validate_file_extension])
 
     def clean(self):
         if not self.descricao:
@@ -73,7 +79,7 @@ class ItemReceita(models.Model):
         return f'{self.medicamento.medicamento} - {self.dosagem}'
 
 class Prontuario(models.Model):
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, null=True, blank=True)
+    medico = models.ForeignKey(Medico, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     data = models.DateField()
     descricao = models.TextField()
@@ -87,8 +93,9 @@ class Prontuario(models.Model):
         return f'Prontuário de {self.paciente.nome} em {self.data}'
 
 class Assinatura(models.Model):
-    arquivo = models.FileField(upload_to='assinaturas/', validators=[validate_file_extension])
-    prontuario = models.ForeignKey(Prontuario, on_delete=models.CASCADE, related_name='assinaturas')
+    arquivo = models.ImageField(upload_to='assinaturas/', validators=[validate_file_extension])
+    prontuario = models.ForeignKey(Prontuario, on_delete=models.CASCADE, related_name='assinaturas', null=True, blank=True)
+    receita = models.ForeignKey(Receita, on_delete=models.CASCADE, related_name='assinaturas', null=True, blank=True)
 
     def __str__(self):
-        return f'Assinatura para prontuário {self.prontuario.id}'
+        return f'Assinatura para {self.prontuario if self.prontuario else self.receita}'
