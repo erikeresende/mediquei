@@ -24,6 +24,8 @@ class Medico(models.Model):
 
     def __str__(self):
         return self.nome
+    class Meta:
+        ordering = ['nome']    
 
 class Paciente(models.Model):
     nome = models.CharField(max_length=255)
@@ -31,10 +33,13 @@ class Paciente(models.Model):
 
     def __str__(self):
         return self.nome
+    class Meta:
+        verbose_name = 'Paciente'
+        verbose_name_plural = 'Pacientes'
 
 class Medicamento(models.Model):
     medicamento = models.CharField(max_length=255, default='Sem Medicamento')
-    dosagem = models.CharField(max_length=255)
+    dosagem = models.CharField(max_length=255, default='Sem dosagem')
 
     def __str__(self):
         return self.medicamento
@@ -44,7 +49,7 @@ class Receita(models.Model):
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     data = models.DateField()
     descricao = models.TextField(default='Nenhuma descrição disponível')
-    assinatura_digital = models.ImageField(upload_to='assinaturas/', blank=True, null=True, validators=[validate_file_extension])
+    assinatura_digital = models.ImageField(upload_to='receitas/', blank=True, null=True, validators=[validate_file_extension])
 
     def clean(self):
         if not self.descricao:
@@ -53,10 +58,16 @@ class Receita(models.Model):
     def __str__(self):
         return f'Receita para {self.paciente.nome} em {self.data}'
 
+    class Meta:
+        ordering = ['-data']
+        verbose_name = 'Receita'
+        verbose_name_plural = 'Receitas'
+
+
 class ItemReceita(models.Model):
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE, related_name='itens')
     medicamento = models.ForeignKey(Medicamento, on_delete=models.CASCADE)
-    dosagem = models.CharField(max_length=50)
+    dosagem = models.CharField(max_length=255)
 
     def __str__(self):
         return f'{self.medicamento.medicamento} - {self.dosagem}'
