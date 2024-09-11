@@ -1,0 +1,12 @@
+<!-- clinica/templates/clinica/deletar_prontuario_confirmar.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<h2>Confirmar Exclusão</h2>
+<p>Você tem certeza que deseja excluir o prontuário de {{ prontuario.paciente.nome }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Excluir</button>
+    <a href="{% url 'listar_prontuarios' %}">Cancelar</a>
+</form>
+{% endblock %}

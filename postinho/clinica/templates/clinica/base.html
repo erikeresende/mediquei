@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postinho - Sistema de Gestão</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/signature_pad.umd.min.js' %}"></script>
+
+
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+</head>
+<body>
+    <header>
+        <h1>Postinho - Sistema de Gestão</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'listar_prontuarios' %}">Prontuários</a></li>
+                <li><a href="{% url 'listar_receitas' %}">Receitas</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Postinho</p>
+    </footer>
+</body>
+</html>

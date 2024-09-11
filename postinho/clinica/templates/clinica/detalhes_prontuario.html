@@ -1,0 +1,11 @@
+<!-- clinica/templates/clinica/detalhes_prontuario.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<h2>Detalhes do Prontuário</h2>
+<p><strong>Paciente:</strong> {{ prontuario.paciente.nome }}</p>
+<p><strong>Data:</strong> {{ prontuario.data }}</p>
+<p><strong>Descrição:</strong> {{ prontuario.descricao }}</p>
+<a href="{% url 'editar_prontuario' prontuario.id %}">Editar</a>
+<a href="{% url 'listar_prontuarios' %}">Voltar</a>
+{% endblock %}

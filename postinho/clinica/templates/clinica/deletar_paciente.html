@@ -1,0 +1,16 @@
+<!-- clinica/templates/clinica/deletar_paciente.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Excluir Paciente</h2>
+
+    <p>Você tem certeza de que deseja excluir o paciente {{ paciente.nome }}?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a href="{% url 'listar_pacientes' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!-- clinica/templates/clinica/listar_prontuarios.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Lista de Prontuários</h2>
+
+    <!-- Link para adicionar um novo prontuário -->
+    <div class="mb-3">
+        <a href="{% url 'criar_prontuario' %}" class="btn btn-primary">Adicionar Novo Prontuário</a>
+        <!-- Link para adicionar um novo paciente -->
+        <a href="{% url 'adicionar_paciente' %}" class="btn btn-secondary">Adicionar Novo Paciente</a>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prontuario in prontuarios %}
+            <tr>
+                <td>{{ prontuario.paciente.nome }}</td>
+                <td>{{ prontuario.data }}</td>
+                <td>
+                    {{ prontuario.descricao|slice:":50" }}{% if prontuario.descricao|length > 50 %}...{% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'visualizar_prontuario' prontuario.id %}" class="btn-action">Detalhes</a> |
+                    <a href="{% url 'editar_prontuario' prontuario.id %}" class="btn-action">Editar</a> |
+                    <a href="{% url 'deletar_prontuario' prontuario.id %}" class="btn-action">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhum prontuário encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

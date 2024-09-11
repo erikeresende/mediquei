@@ -1,0 +1,12 @@
+<!-- clinica/templates/clinica/deletar_receita_confirmar.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<h2>Confirmar Exclusão</h2>
+<p>Você tem certeza que deseja excluir a receita de {{ receita.paciente.nome }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Excluir</button>
+    <a href="{% url 'listar_receitas' %}">Cancelar</a>
+</form>
+{% endblock %}

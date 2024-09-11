@@ -1,0 +1,12 @@
+<!-- clinica/templates/clinica/detalhes_receita.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<h2>Detalhes da Receita</h2>
+<p><strong>Paciente:</strong> {{ receita.paciente.nome }}</p>
+<p><strong>Data:</strong> {{ receita.data }}</p>
+<p><strong>Medicamento:</strong> {{ receita.medicamento }}</p>
+<p><strong>Dosagem:</strong> {{ receita.dosagem }}</p>
+<a href="{% url 'editar_receita' receita.id %}">Editar</a>
+<a href="{% url 'listar_receitas' %}">Voltar</a>
+{% endblock %}

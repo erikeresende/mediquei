@@ -1,0 +1,12 @@
+<!-- clinica/templates/clinica/editar_prontuario.html -->
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<h2>Editar Prontuário</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+</form>
+<a href="{% url 'listar_prontuarios' %}">Voltar</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Visualizar Prontuário</h2>
+
+    <!-- Exibição de informações do prontuário -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Detalhes do Prontuário</h4>
+            <p><strong>Paciente:</strong> {{ prontuario.paciente }}</p>
+            <p><strong>Data:</strong> {{ prontuario.data }}</p>
+            <p><strong>Descrição:</strong> {{ prontuario.descricao }}</p>
+
+            <!-- Exibir a assinatura digital, se disponível -->
+            {% if prontuario.assinatura_digital %}
+                <div class="mt-3">
+                    <h5>Assinatura Digital:</h5>
+                    <img src="{{ prontuario.assinatura_digital }}" alt="Assinatura Digital" class="img-fluid" />
+                </div>
+            {% else %}
+                <p>Assinatura Digital não disponível.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Botões para ações -->
+    <div class="mt-4">
+        <a href="{% url 'editar_prontuario' prontuario.id %}" class="btn btn-primary">Editar</a>
+        <a href="{% url 'listar_prontuarios' %}" class="btn btn-secondary">Voltar para a lista</a>
+    </div>
+</div>
+{% endblock %}

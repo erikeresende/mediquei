@@ -1,0 +1,13 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Inicial</title>
+</head>
+<body>
+    <h1>Bem-vindo ao Sistema de Gestão de Clínicas!</h1>
+    <p>Utilize o menu para acessar os prontuários e receitas.</p>
+    <a href="{% url 'listar_prontuarios' %}">Listar Prontuários</a>
+    <a href="{% url 'criar_prontuario' %}">Adicionar Prontuário</a>
+</body>
+</html>
