@@ -11,16 +11,15 @@
                 <th>Paciente</th>
                 <th>Data</th>
                 <th>Medicamento</th>
-                <th>Dosagem</th>
-                <th>Assinatura</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for receita in receitas %}
             <tr>
+                <td>{{ receita.medico.nome }}</td><td> 
                 <td>{{ receita.paciente.nome }}</td>
-                <td>{{ receita.data|date:"d/m/Y" }}</td> <!-- Formato da data -->
+                <td>{{ prontuario.data }}</td><!-- Formato da data -->
                 <td>
                     {% for medicamento in receita.medicamento.all %}
                         {{ medicamento }} ({{ receita.dosagem }})<br>

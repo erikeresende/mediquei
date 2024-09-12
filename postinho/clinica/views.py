@@ -9,6 +9,8 @@ from django.core.files.base import ContentFile
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from .utils import processar_assinatura_digital 
+from django.forms import inlineformset_factory
 
 def pagina_inicial(request):
     return render(request, 'clinica/pagina_inicial.html')
@@ -51,6 +53,8 @@ def deletar_paciente(request, id):
         return redirect('listar_pacientes')
     return render(request, 'clinica/deletar_paciente.html', {'paciente': paciente})
 
+from django.contrib import messages
+
 def criar_prontuario(request):
     if request.method == 'POST':
         form = ProntuarioForm(request.POST, request.FILES)
@@ -62,31 +66,34 @@ def criar_prontuario(request):
                 try:
                     # Processa a assinatura digital em base64
                     header, encoded = assinatura_digital.split(',', 1)
-                    format = header.split(';')[0].split('/')[1]  # Pega o formato
+                    format = header.split(';')[0].split('/')[1]
                     file_data = base64.b64decode(encoded)
-                    
-                    # Verifica se o formato é PNG
+
                     if format.lower() != 'png':
-                        logging.error("O arquivo deve ser no formato PNG.")
+                        messages.error(request, "A assinatura deve ser em formato PNG.")
                         return render(request, 'clinica/criar_prontuario.html', {'form': form})
 
                     image = Image.open(BytesIO(file_data))
                     png_image_io = BytesIO()
                     image.save(png_image_io, format='PNG')
-                    
+
                     file_name = f"assinatura.{format}"
                     prontuario.assinatura_digital.save(file_name, ContentFile(png_image_io.getvalue()), save=False)
                 except Exception as e:
                     logging.error(f'Erro ao processar a assinatura digital: {e}')
+                    messages.error(request, "Ocorreu um erro ao processar a assinatura digital.")
                     return render(request, 'clinica/criar_prontuario.html', {'form': form})
 
             prontuario.save()
             return redirect('listar_prontuarios')
         else:
             logging.error(f'Form errors: {form.errors}')
+            messages.error(request, "O formulário contém erros. Por favor, verifique.")
     else:
         form = ProntuarioForm()
+    
     return render(request, 'clinica/criar_prontuario.html', {'form': form})
+
 
 def editar_prontuario(request, prontuario_id):
     prontuario = get_object_or_404(Prontuario, id=prontuario_id)
@@ -135,66 +142,52 @@ def criar_medico(request):
         form = MedicoForm()
     return render(request, 'clinica/criar_medico.html', {'form': form})
 
-from django.shortcuts import render, redirect
-from django.forms import formset_factory
-from .forms import ReceitaForm, ItemReceitaForm
-from .models import ItemReceita
-import logging
-
 def criar_receita(request):
-    ItemReceitaFormSet = formset_factory(ItemReceitaForm, extra=1)
+    ItemReceitaFormSet = inlineformset_factory(Receita, ItemReceita, form=ItemReceitaForm, extra=1, can_delete=True)
 
     if request.method == 'POST':
-        form = ReceitaForm(request.POST)
-        formset = ItemReceitaFormSet(request.POST)
-        assinatura_digital = request.POST.get('assinatura_digital')  # Assinatura digital como base64
+        form = ReceitaForm(request.POST, request.FILES)
+        formset = ItemReceitaFormSet(request.POST, request.FILES)
 
         if form.is_valid() and formset.is_valid():
             receita = form.save(commit=False)
 
+            # Processamento da assinatura digital
+            assinatura_digital = request.POST.get('assinatura_digital')
             if assinatura_digital:
                 try:
-                    # Processa a assinatura digital em base64
                     header, encoded = assinatura_digital.split(',', 1)
-                    format = header.split(';')[0].split('/')[1]  # Pega o formato
+                    formato = header.split(';')[0].split('/')[1]
                     file_data = base64.b64decode(encoded)
-                    
-                    # Verifica se o formato é PNG
-                    if format.lower() != 'png':
-                        logging.error("O arquivo deve ser no formato PNG.")
+
+                    if formato.lower() != 'png':
+                        messages.error(request, "A assinatura deve ser em formato PNG.")
                         return render(request, 'clinica/criar_receita.html', {'form': form, 'formset': formset})
 
                     image = Image.open(BytesIO(file_data))
                     png_image_io = BytesIO()
                     image.save(png_image_io, format='PNG')
-                    
-                    file_name = f"assinatura.{format}"
+
+                    file_name = f"assinatura_receita.png"
                     receita.assinatura_digital.save(file_name, ContentFile(png_image_io.getvalue()), save=False)
                 except Exception as e:
                     logging.error(f'Erro ao processar a assinatura digital: {e}')
+                    messages.error(request, "Ocorreu um erro ao processar a assinatura digital.")
                     return render(request, 'clinica/criar_receita.html', {'form': form, 'formset': formset})
 
             receita.save()
 
-            # Cria itens de receita com base nos dados do formset
-            for item_form in formset:
-                if item_form.cleaned_data:
-                    medicamento = item_form.cleaned_data.get('medicamento')
-                    dosagem = item_form.cleaned_data.get('dosagem')
-                    if medicamento and dosagem:
-                        ItemReceita.objects.create(
-                            receita=receita,
-                            medicamento=medicamento,
-                            dosagem=dosagem
-                        )
+            # Salvar os itens da receita
+            formset.instance = receita
+            formset.save()
 
+            messages.success(request, "Receita criada com sucesso!")
             return redirect('listar_receitas')
+
         else:
-            logging.error(f'Form errors: {form.errors}')
-            logging.error(f'Formset errors: {formset.errors}')
-            print('Form errors:', form.errors)
-            print('Formset errors:', formset.errors)
-            print('Files:', request.FILES)
+            messages.error(request, "Erros no formulário ou nos itens da receita.")
+            return render(request, 'clinica/criar_receita.html', {'form': form, 'formset': formset})
+
     else:
         form = ReceitaForm()
         formset = ItemReceitaFormSet()

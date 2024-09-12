@@ -1,23 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var addMedicamentoBtn = document.getElementById('add-medicamento');
-    var medicamentosContainer = document.getElementById('medicamentos-container');
-    var totalForms = document.getElementById('id_form-TOTAL_FORMS');  // Campo oculto gerado pelo formset
-    var currentFormCount = parseInt(totalForms.value);  // Número atual de formulários
+    var canvas = document.getElementById('signature-pad');
+    var signaturePad = new SignaturePad(canvas);
 
-    addMedicamentoBtn.addEventListener('click', function() {
-        // Clona o primeiro item da lista de medicamentos
-        var newForm = medicamentosContainer.children[0].cloneNode(true);
+    // Limpar assinatura
+    document.getElementById('clear').addEventListener('click', function () {
+        signaturePad.clear();
+    });
 
-        // Atualiza o índice dos novos campos de medicamento e dosagem
-        newForm.querySelectorAll('input').forEach(function(input) {
-            var name = input.name.replace(`-${currentFormCount-1}-`, `-${currentFormCount}-`);
-            input.name = name;
-            input.id = `id_${name}`;
-            input.value = '';  // Limpa o valor do campo para o novo medicamento
+    // Processar envio do formulário
+    document.querySelector('form').addEventListener('submit', function () {
+        if (!signaturePad.isEmpty()) {
+            var dataURL = signaturePad.toDataURL();
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'assinatura_digital';
+            input.value = dataURL;
+            this.appendChild(input);
+        }
+    });
+
+    // Adicionar novo medicamento
+    document.getElementById('add-medicamento').addEventListener('click', function() {
+        var container = document.getElementById('medicamentos-container');
+        var newItem = document.createElement('div');
+        newItem.className = 'medicamento-item mb-3 d-flex align-items-center';
+        newItem.innerHTML = `
+            <div class="flex-grow-1">
+                <input type="text" name="medicamentos[]" class="form-control mb-2" placeholder="Nome do medicamento" />
+                <input type="text" name="dosagens[]" class="form-control" placeholder="Dosagem" />
+            </div>
+            <button type="button" class="btn btn-danger btn-sm remove-medicamento ml-2">Remover</button>
+        `;
+        container.appendChild(newItem);
+
+        // Adicionar evento de remoção ao novo item
+        newItem.querySelector('.remove-medicamento').addEventListener('click', function() {
+            newItem.remove();
         });
+    });
 
-        medicamentosContainer.appendChild(newForm);
-        totalForms.value = currentFormCount + 1;  // Incrementa o contador de forms
-        currentFormCount++;
+    // Adicionar eventos de remoção aos medicamentos existentes
+    document.querySelectorAll('.remove-medicamento').forEach(function(button) {
+        button.addEventListener('click', function() {
+            this.parentElement.remove();
+        });
     });
 });

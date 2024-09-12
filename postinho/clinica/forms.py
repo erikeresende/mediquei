@@ -45,6 +45,7 @@ class MedicamentoForm(forms.ModelForm):
 
 class ReceitaForm(forms.ModelForm):
     assinatura_digital = forms.CharField(widget=forms.HiddenInput(), required=False)  # Campo oculto para a assinatura
+
     class Meta:
         model = Receita
         fields = ['medico', 'paciente', 'data', 'descricao', 'assinatura_digital']
@@ -61,7 +62,7 @@ class ItemReceitaForm(forms.ModelForm):
         model = ItemReceita
         fields = ['medicamento', 'dosagem']
         widgets = {
-            'medicamento': forms.TextInput(attrs={'class': 'form-control'}),
+            'medicamento': forms.Select(attrs={'class': 'form-control'}),  # Alterado para Select se Medicamento for um ForeignKey
             'dosagem': forms.TextInput(attrs={'class': 'form-control'}),
         }
 

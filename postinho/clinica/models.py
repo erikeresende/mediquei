@@ -2,8 +2,10 @@ from django.db import models
 from django.core.exceptions import ValidationError
 import re
 from datetime import date
-import base64
 from django.core.files.base import ContentFile
+from PIL import Image
+from io import BytesIO
+import base64
 
 # Funções de validação
 def validate_crm(value):
@@ -16,19 +18,15 @@ def validate_data_nascimento(value):
 
 def validate_file_extension(value):
     if not value.name.lower().endswith('.png'):
-        raise ValidationError('O arquivo deve ser no formato PNG.')
+        raise ValidationError('A assinatura deve estar em formato PNG.')
 
 # Modelos
-
 class Medico(models.Model):
     nome = models.CharField(max_length=255)
-    crm = models.CharField(max_length=20, unique=True, validators=[validate_crm])
+    crm = models.CharField(max_length=20, validators=[validate_crm])
 
     def __str__(self):
-        return self.nome
-    
-    class Meta:
-        ordering = ['nome']
+        return f"{self.nome} (CRM: {self.crm})"
 
 class Paciente(models.Model):
     nome = models.CharField(max_length=255)
@@ -48,8 +46,6 @@ class Medicamento(models.Model):
     def __str__(self):
         return self.medicamento
 
-# No models.py
-
 class Receita(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
@@ -68,7 +64,6 @@ class Receita(models.Model):
         ordering = ['-data']
         verbose_name = 'Receita'
         verbose_name_plural = 'Receitas'
-
 
 class ItemReceita(models.Model):
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE, related_name='itens')

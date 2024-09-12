@@ -1,5 +1,4 @@
 {% extends 'clinica/base.html' %}
-
 {% load static %}
 
 {% block content %}
@@ -9,88 +8,68 @@
         {% csrf_token %}
 
         <!-- Informações da Receita -->
-        <div class="form-group">
-            <label for="{{ form.medico.id_for_label }}">Médico:</label>
-            {{ form.medico }}
-        </div>
+        <fieldset>
+            <legend>Informações da Receita</legend>
 
-        <div class="form-group">
-            <label for="{{ form.paciente.id_for_label }}">Paciente:</label>
-            {{ form.paciente }}
-        </div>
+            <div class="form-group">
+                <label for="{{ form.medico.id_for_label }}">Médico:</label>
+                {{ form.medico }}
+            </div>
 
-        <div class="form-group mb-4">
-            <label for="{{ form.data.id_for_label }}">Data:</label>
-            {{ form.data }}
-        </div>
-        
-        <!-- Campo de descrição -->
-        <div class="form-group mb-4">
-            <label for="{{ form.descricao.id_for_label }}">Descrição:</label>
-            {{ form.descricao }}
-        </div>
+            <div class="form-group">
+                <label for="{{ form.paciente.id_for_label }}">Paciente:</label>
+                {{ form.paciente }}
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="{{ form.data.id_for_label }}">Data:</label>
+                {{ form.data }}
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="{{ form.descricao.id_for_label }}">Descrição:</label>
+                {{ form.descricao }}
+            </div>
+        </fieldset>
 
         <!-- Lista de Medicamentos -->
-        <div class="form-group mb-4">
-            <label>Medicamento</label>
-            <div id="medicamentos-container">
-                {% for form in formset %}
-                    <div class="medicamento-item mb-3">
-                        {{ form.medicamento.label_tag }} {{ form.medicamento }}  <!-- Campo de medicamento -->
-                        {{ form.dosagem.label_tag }} {{ form.dosagem }}  <!-- Campo de dosagem -->
-                    </div>
-                {% endfor %}
+        <fieldset>
+            <legend>Medicamentos</legend>
+            <div class="form-group mb-4">
+                <div id="medicamentos-container">
+                    {% for form in formset %}
+                        <div class="medicamento-item mb-3 d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                {{ form.medicamento.label_tag }} {{ form.medicamento }}
+                                {{ form.dosagem.label_tag }} {{ form.dosagem }}
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm remove-medicamento ml-2">Remover</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="add-medicamento" class="btn btn-secondary">Adicionar Medicamento</button>
             </div>
-            <button type="button" id="add-medicamento" class="btn btn-secondary">Adicionar Medicamento</button>
-        </div>
+        </fieldset>
 
-        <!-- Campo de assinatura digital -->
-        <div class="form-group">
-            <label>Assinatura Digital:</label>
-            <div class="border p-2 mb-2" style="border: 1px solid #000;">
-                <canvas id="signature-pad" class="form-control" width="400" height="200"></canvas>
+        <!-- Campo de Assinatura Digital -->
+        <fieldset>
+            <legend>Assinatura Digital</legend>
+            <div class="form-group">
+                <label>Assinatura Digital:</label>
+                <div class="border p-2 mb-2" style="border: 1px solid #000;">
+                    <canvas id="signature-pad" class="form-control" width="400" height="200"></canvas>
+                </div>
+                <button type="button" id="clear" class="btn btn-secondary">Limpar Assinatura</button>
             </div>
-            <button type="button" id="clear" class="btn btn-secondary">Limpar Assinatura</button>
-        </div>
+        </fieldset>
 
+        <!-- Botões -->
         <button type="submit" class="btn btn-primary">Salvar</button>
         <a href="{% url 'listar_receitas' %}" class="btn btn-secondary mt-3">Voltar</a>
     </form>
 </div>
 
 <!-- Script para gerenciamento da assinatura digital e lista de medicamentos -->
-<script src="{% static 'js/signature_pad.umd.min.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var canvas = document.getElementById('signature-pad');
-        var signaturePad = new SignaturePad(canvas);
-
-        document.getElementById('clear').addEventListener('click', function () {
-            signaturePad.clear();
-        });
-
-        document.querySelector('form').addEventListener('submit', function () {
-            if (!signaturePad.isEmpty()) {
-                var dataURL = signaturePad.toDataURL(); // Captura a assinatura como base64
-                var input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'assinatura_digital'; // Nome do campo que será enviado ao servidor
-                input.value = dataURL; // Adiciona a assinatura ao campo oculto
-                this.appendChild(input);
-            }
-        });
-
-        // Adiciona funcionalidade para adicionar medicamentos
-        document.getElementById('add-medicamento').addEventListener('click', function() {
-            var container = document.getElementById('medicamentos-container');
-            var newItem = document.createElement('div');
-            newItem.className = 'medicamento-item mb-3';
-            newItem.innerHTML = `
-                <input type="text" name="medicamentos[]" class="form-control mb-2" placeholder="Nome do medicamento" />
-                <input type="text" name="dosagens[]" class="form-control" placeholder="Dosagem" />
-            `;
-            container.appendChild(newItem);
-        });
-    });
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/5.0.3/signature_pad.umd.min.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
