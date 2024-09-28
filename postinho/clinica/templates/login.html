@@ -1,0 +1,468 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            margin: 0 40px; /* Adiciona margem à esquerda e à direita */
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin-bottom: 50px;
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        p {
+            color: #ddd;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 30px); /* Ajusta a largura para acomodar a margem */
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+            margin-left: 15px; /* Adiciona margem à esquerda nos inputs */
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #007bff;
+            background: rgba(255, 255, 255, 0.25);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            background-color: rgba(255, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .register-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #0056b3;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+                /* Animação de pulsar para o texto do h1 */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin-bottom: 50px;
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+            animation: pulse 1.5s infinite; /* Aplica a animação de pulsar */
+        }
+
+        /* Estilos Gerais */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden; /* Para evitar barras de rolagem */
+        }
+        
+          /* Animação de brilhos ao fundo */
+          @keyframes shine {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            animation: shine 3s linear infinite; /* Aplica a animação de brilho */
+            z-index: 0; /* Para ficar atrás do conteúdo */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            margin: 0 40px; /* Adiciona margem à esquerda e à direita */
+            position: relative; /* Para manter o contexto de posicionamento */
+            z-index: 1; /* Para ficar acima do fundo */
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin-bottom: 50px;
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+            animation: pulse 1.5s infinite; /* Aplica a animação de pulsar */
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        p {
+            color: #ddd;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 30px); /* Ajusta a largura para acomodar a margem */
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+            margin-left: 15px; /* Adiciona margem à esquerda nos inputs */
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #007bff;
+            background: rgba(255, 255, 255, 0.25);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            background-color: rgba(255, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .register-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #0056b3;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .container {
+                padding: 20px;
+                width: 90%;
+                margin: 0 10px; /* Ajusta a margem em dispositivos pequenos */
+            }
+
+            button {
+                padding: 10px;
+                font-size: 1rem;
+            }
+        }
+        .input-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+                }
+
+        .password-icon {
+            width: 20px; /* Set appropriate size */
+            height: auto;
+            left: 10px; 
+            top: 50%;
+            vertical-align: middle; /* Center vertically */
+            transform: translateY(-20%);   
+        }
+        .user-icon{
+            width: 20px; /* Set appropriate size */
+            height: auto;
+            left: 10px; 
+            top: 50%;
+            vertical-align: middle; /* Center vertically */
+            transform: translateY(-35%); 
+        }
+
+
+        input[type="text"], input[type="password"] {
+            padding-left: 40px; /* Adjust for icon space */
+        }
+
+        .login-icon {
+            width: 20px; /* Set appropriate size */
+            height: auto;
+            margin-right: -1px; /* Space between icon and text */
+            vertical-align: middle; /* Center vertically */
+        }
+
+        .eye-icon {
+            width: 35px; /* Tamanho padrão para o ícone de olho fechado */
+            height: auto;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-70%);
+            cursor: pointer;
+        }
+
+        .eye-icon-open {
+            width: 75px; /* Tamanho padrão para o ícone de olho fechado */
+            height: auto;
+            position: absolute;
+            right: 0px;
+            left: 335px;
+            top: 50%;
+            transform: translateY(-57%);
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Sistema de Gestão de Clínicas</h1>
+</header>
+
+<main class="container">
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-control">
+            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+            <div class="input-icon">
+                <img src="{% static 'icons/user-icon.png' %}" alt="User Icon" class="user-icon">
+                {{ form.username }}
+            </div>
+        </div>
+        <div class="form-control">
+            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+            <div class="input-icon">
+                <img src="{% static 'icons/password-icon.png' %}" alt="Password Icon" class="password-icon">
+                <input type="password" id="password" name="password" class="form-input" value="{{ form.password.value|default_if_none:'' }}">
+                <img src="{% static 'icons/eye-closed-icon.png' %}" alt="Show Password" class="eye-icon" id="togglePassword">
+            </div>
+        </div>
+        </div>
+        <button type="submit">
+            <img src="{% static 'icons/login-icon.png' %}" alt="Login Icon" class="login-icon">
+            Entrar
+        </button>
+    </form>
+    {% if form.non_field_errors %}
+        <div class="alert">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+    <div class="register-link">
+        <p>Ainda não tem uma conta? <a href="{% url 'cadastrar' %}">Cadastre-se aqui</a></p>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2024 Sistema de Gestão de Clínicas. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
+
+        togglePassword.addEventListener("click", function() {
+            // Alterna o tipo do input entre 'password' e 'text'
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+
+            // Alterna o ícone do olho
+            if (type === "password") {
+                togglePassword.src = "{% static 'icons/eye-closed-icon.png' %}"; // Ícone de olho fechado
+                togglePassword.classList.remove("eye-icon-open"); // Remove a classe de olho aberto
+            } else {
+                togglePassword.src = "{% static 'icons/eye-open-icon.png' %}"; // Ícone de olho aberto
+                togglePassword.classList.add("eye-icon-open"); // Adiciona a classe de olho aberto
+            }
+        });
+    });
+</script>
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

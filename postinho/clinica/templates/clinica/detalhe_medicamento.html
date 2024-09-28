@@ -1,0 +1,23 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Detalhes do Medicamento</h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Informações do Medicamento</h4>
+            <p><strong>Nome:</strong> {{ medicamento.nome }}</p>
+            <p><strong>Dosagem:</strong> {{ medicamento.dosagem }}</p>
+            <p><strong>Forma Farmacêutica:</strong> {{ medicamento.forma_farmaceutica }}</p>
+            <p><strong>Descrição:</strong> {{ medicamento.descricao }}</p> 
+        </div>
+    </div>
+
+    <!-- Botões para ações -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-warning" aria-label="Editar Medicamento">Editar</a>
+        <a href="{% url 'listar_medicamentos' %}" class="btn btn-secondary" aria-label="Voltar para a lista de medicamentos">Voltar para a lista</a>
+    </div>
+</div>
+{% endblock %}

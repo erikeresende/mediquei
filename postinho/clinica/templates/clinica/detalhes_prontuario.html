@@ -1,11 +1,53 @@
-<!-- clinica/templates/clinica/detalhes_prontuario.html -->
 {% extends 'clinica/base.html' %}
+{% load meus_filtros %}
 
 {% block content %}
-<h2>Detalhes do Prontuário</h2>
-<p><strong>Paciente:</strong> {{ prontuario.paciente.nome }}</p>
-<p><strong>Data:</strong> {{ prontuario.data }}</p>
-<p><strong>Descrição:</strong> {{ prontuario.descricao }}</p>
-<a href="{% url 'editar_prontuario' prontuario.id %}">Editar</a>
-<a href="{% url 'listar_prontuarios' %}">Voltar</a>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Visualizar Prontuário</h1>
+
+    <!-- Exibição de informações do prontuário -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Detalhes do Prontuário</h4>
+            <p><strong>Paciente:</strong> {{ prontuario.paciente.nome }}</p>
+            <p><strong>Data:</strong> {{ prontuario.data|date:"d/m/Y" }}</p>
+            <p><strong>Descrição:</strong> {{ prontuario.descricao }}</p>
+
+            <!-- Exibir a assinatura digital, se disponível -->
+            <div class="mt-4">
+                <h5>Assinatura Digital:</h5>
+                {% if prontuario.assinatura_digital %}
+                    <img src="{{ prontuario.assinatura_digital.url }}" alt="Assinatura Digital" class="img-fluid border rounded" style="max-width: 200px;" />
+                {% else %}
+                    <p class="text-muted">Assinatura Digital não disponível.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Exibição da receita médica -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Medicamentos Prescritos</h4>
+            {% if medicamentos %}
+                {% for receita in medicamentos %}
+                    <div class="mb-3">
+                        <p><strong>Medicamento:</strong> {{ receita.medicamento.nome }}</p>
+                        <p><strong>Dosagem:</strong> {{ receita.dosagem }}</p>
+                        <p><strong>Forma Farmacêutica:</strong> {{ receita.medicamento.forma_farmaceutica }}</p>
+                        <p><strong>Descrição:</strong> {{ receita.medicamento.descricao }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">Nenhum medicamento prescrito.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Botões para ações -->
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{% url 'editar_prontuario' prontuario.id %}" class="btn btn-primary" aria-label="Editar Prontuário">Editar</a>
+        <a href="{% url 'listar_prontuarios' %}" class="btn btn-secondary" aria-label="Voltar para a lista de prontuários">Voltar para a lista</a>
+    </div>
+</div>
 {% endblock %}

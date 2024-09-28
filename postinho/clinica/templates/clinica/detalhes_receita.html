@@ -1,12 +1,37 @@
-<!-- clinica/templates/clinica/detalhes_receita.html -->
 {% extends 'clinica/base.html' %}
 
 {% block content %}
-<h2>Detalhes da Receita</h2>
-<p><strong>Paciente:</strong> {{ receita.paciente.nome }}</p>
-<p><strong>Data:</strong> {{ receita.data }}</p>
-<p><strong>Medicamento:</strong> {{ receita.medicamento }}</p>
-<p><strong>Dosagem:</strong> {{ receita.dosagem }}</p>
-<a href="{% url 'editar_receita' receita.id %}">Editar</a>
-<a href="{% url 'listar_receitas' %}">Voltar</a>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Detalhes da Receita</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <!-- Informações do Paciente -->
+            <h5 class="card-title">Paciente: {{ receita.paciente.nome }}</h5>
+            <p class="card-text"><strong>Data de Nascimento:</strong> {{ receita.paciente.data_nascimento|date:"d/m/Y" }}</p>
+            <p class="card-text"><strong>Idade:</strong> {{ receita.paciente.idade }} anos</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <!-- Detalhes da Receita -->
+            <h5 class="card-title">Receita</h5>
+            <p><strong>Medicamento:</strong> {{ receita.medicamento.nome }}</p>
+            <p><strong>Dosagem:</strong> {{ receita.dosagem }}</p>
+            <p><strong>Instruções:</strong> {{ receita.instrucoes }}</p>
+            <p><strong>Data da Receita:</strong> {{ receita.data|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="mt-4">
+        <a href="{% url 'listar_receitas' %}" class="btn btn-secondary">Voltar</a>
+        <a href="{% url 'editar_receita' receita.id %}" class="btn btn-primary">Editar</a>
+        <form action="{% url 'remover_receita' receita.id %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Remover</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

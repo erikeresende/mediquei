@@ -1,12 +1,53 @@
-<!-- clinica/templates/clinica/editar_receita.html -->
 {% extends 'clinica/base.html' %}
 
 {% block content %}
-<h2>Editar Receita</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
-<a href="{% url 'listar_receitas' %}">Voltar</a>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Editar Receita</h2>
+
+    <h4>Paciente: {{ paciente.nome }}</h4>
+    <p>Data de Nascimento: {{ paciente.data_nascimento }}</p>
+    <p>Idade: {{ paciente.idade }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.medicamento.id_for_label }}">Medicamento:</label>
+            {{ form.medicamento }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.dosagem.id_for_label }}">Dosagem:</label>
+            {{ form.dosagem }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.instrucoes.id_for_label }}">Instruções:</label>
+            {{ form.instrucoes }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.data.id_for_label }}">Data:</label>
+            {{ form.data }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a href="{% url 'listar_receitas' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+    <!-- Exibe erros, se houver -->
+    {% if form.errors %}
+        <div class="alert alert-danger mt-3">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

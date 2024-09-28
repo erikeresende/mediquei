@@ -1,12 +1,120 @@
-<!-- clinica/templates/clinica/editar_prontuario.html -->
 {% extends 'clinica/base.html' %}
 
 {% block content %}
-<h2>Editar Prontuário</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
-<a href="{% url 'listar_prontuarios' %}">Voltar</a>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Editar Prontuário</h2>
+
+    <!-- Formulário de edição do prontuário -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+
+        <!-- Seção de edição de receitas -->
+        <h4 class="mt-4">Receitas Médicas</h4>
+        
+        <!-- Se já existirem receitas associadas, exibe e permite a edição -->
+        {% if receita_forms %}
+            <div class="receitas-group">
+                {% for receita_form in receita_forms %}
+                    <div class="form-group mb-3">
+                        <h5>Receita {{ forloop.counter }}</h5>
+                        <label for="{{ receita_form.medicamento.id_for_label }}">Medicamento:</label>
+                        {{ receita_form.medicamento }}
+
+                        <label for="{{ receita_form.dosagem.id_for_label }}">Dosagem:</label>
+                        {{ receita_form.dosagem }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Nenhuma receita cadastrada.</p>
+        {% endif %}
+
+        <!-- Botão para adicionar mais receitas, se necessário -->
+        <button type="button" id="add-receita" class="btn btn-secondary mt-2">Adicionar Receita</button>
+
+        <!-- Seção para gerenciamento de medicamentos -->
+        <h4 class="mt-4">Medicamentos Associados</h4>
+        <div id="medicamentos-container">
+            <div class="medicamento-item mb-3 d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <select name="medicamentos[]" class="form-control mb-2" onchange="updateMedicationDetails(this)">
+                        <option value="">Selecione um medicamento</option>
+                        {% for medicamento in medicamentos %}
+                            <option value="{{ medicamento.id }}" data-dosagem="{{ medicamento.dosagem }}" data-forma="{{ medicamento.forma_farmaceutica }}">{{ medicamento.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="dosagens[]" class="form-control mb-2" placeholder="Dosagem" readonly />
+                    <input type="text" name="formas[]" class="form-control" placeholder="Forma Farmacêutica" readonly />
+                </div>
+                <button type="button" class="btn btn-danger btn-sm remove-medicamento ml-2">Remover</button>
+            </div>
+        </div>
+
+        <!-- Botão para adicionar novo medicamento -->
+        <button type="button" id="add-medicamento" class="btn btn-success mb-3">Adicionar Medicamento</button>
+
+        <!-- Botão de submissão -->
+        <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+    </form>
+
+    <!-- Botão para voltar à lista de prontuários -->
+    <div class="text-center mt-3">
+        <a href="{% url 'listar_prontuarios' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Adicionar novo medicamento
+        document.getElementById('add-medicamento').addEventListener('click', function() {
+            var container = document.getElementById('medicamentos-container');
+            var newItem = document.createElement('div');
+            newItem.className = 'medicamento-item mb-3 d-flex align-items-center';
+            newItem.innerHTML = `
+                <div class="flex-grow-1">
+                    <select name="medicamentos[]" class="form-control mb-2" onchange="updateMedicationDetails(this)">
+                        <option value="">Selecione um medicamento</option>
+                        {% for medicamento in medicamentos %}
+                            <option value="{{ medicamento.id }}" data-dosagem="{{ medicamento.dosagem }}" data-forma="{{ medicamento.forma_farmaceutica }}">{{ medicamento.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="dosagens[]" class="form-control mb-2" placeholder="Dosagem" readonly />
+                    <input type="text" name="formas[]" class="form-control" placeholder="Forma Farmacêutica" readonly />
+                </div>
+                <button type="button" class="btn btn-danger btn-sm remove-medicamento ml-2">Remover</button>
+            `;
+            container.appendChild(newItem);
+    
+            // Adicionar evento de remoção ao novo item
+            newItem.querySelector('.remove-medicamento').addEventListener('click', function() {
+                newItem.remove();
+            });
+        });
+    
+        // Remover medicamento existente
+        document.querySelectorAll('.remove-medicamento').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+    });
+
+    function updateMedicationDetails(selectElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const dosagemInput = selectElement.parentElement.querySelector('input[name="dosagens[]"]');
+        const formaInput = selectElement.parentElement.querySelector('input[name="formas[]"]');
+    
+        if (selectedOption.value) {
+            dosagemInput.value = selectedOption.getAttribute('data-dosagem');
+            formaInput.value = selectedOption.getAttribute('data-forma');
+        } else {
+            dosagemInput.value = '';
+            formaInput.value = '';
+        }
+    }
+</script>
+
 {% endblock %}

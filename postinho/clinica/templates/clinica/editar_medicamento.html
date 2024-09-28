@@ -1,0 +1,43 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Editar Medicamento</h2>
+
+    <!-- Feedback de sucesso -->
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" class="bg-light p-4 rounded shadow-sm" novalidate>
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" class="form-control" id="nome" name="nome" value="{{ medicamento.nome }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dosagem">Dosagem:</label>
+            <input type="text" class="form-control" id="dosagem" name="dosagem" value="{{ medicamento.dosagem }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="forma_farmaceutica">Forma Farmacêutica:</label>
+            <input type="text" class="form-control" id="forma_farmaceutica" name="forma_farmaceutica" value="{{ medicamento.forma_farmaceutica }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="descricao">Descrição:</label>
+            <textarea class="form-control" id="descricao" name="descricao" rows="4" required>{{ medicamento.descricao }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block">Salvar Alterações</button>
+        <a href="{% url 'listar_medicamentos' %}" class="btn btn-secondary btn-lg btn-block mt-3">Voltar</a>
+    </form>
+</div>
+{% endblock %}

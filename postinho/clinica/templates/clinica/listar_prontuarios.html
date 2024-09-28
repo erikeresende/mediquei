@@ -3,46 +3,48 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Lista de Prontuários</h2>
+    <h2 class="mb-4 text-center">Lista de Prontuários</h2>
 
     <!-- Link para adicionar um novo prontuário -->
-    <div class="mb-3">
-        <a href="{% url 'criar_prontuario' %}" class="btn btn-primary">Adicionar Novo Prontuário</a>
+    <div class="mb-3 text-center">
+        <a href="{% url 'criar_prontuario' %}" class="btn btn-primary me-2">Adicionar Novo Prontuário</a>
         <!-- Link para adicionar um novo paciente -->
         <a href="{% url 'adicionar_paciente' %}" class="btn btn-secondary">Adicionar Novo Paciente</a>
     </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Medico</th>
-                <th>Paciente</th>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for prontuario in prontuarios %}
-            <tr>
-                <td>{{ prontuario.medico.nome }}</td>
-                <td>{{ prontuario.paciente.nome }}</td>
-                <td>{{ prontuario.data }}</td>
-                <td>
-                    {{ prontuario.descricao|slice:":50" }}{% if prontuario.descricao|length > 50 %}...{% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'visualizar_prontuario' prontuario.id %}" class="btn-action">Detalhes</a> |
-                    <a href="{% url 'editar_prontuario' prontuario.id %}" class="btn-action">Editar</a> |
-                    <a href="{% url 'deletar_prontuario' prontuario.id %}" class="btn-action">Excluir</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">Nenhum prontuário encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Medico</th>
+                    <th>Paciente</th>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prontuario in prontuarios %}
+                <tr>
+                    <td>{{ prontuario.medico.nome }}</td>
+                    <td>{{ prontuario.paciente.nome }}</td>
+                    <td>{{ prontuario.data|date:"d/m/Y" }}</td>
+                    <td>
+                        {{ prontuario.descricao|slice:":50" }}{% if prontuario.descricao|length > 50 %}...{% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'detalhes_prontuario' prontuario.id %}" class="btn btn-info btn-sm">Detalhes</a>
+                        <a href="{% url 'editar_prontuario' prontuario.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'deletar_prontuario' prontuario.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Nenhum prontuário encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Lista de Medicamentos</h2>
+
+    <!-- Barra de pesquisa -->
+    <form method="GET" class="form-inline mb-4 d-flex justify-content-center">
+        <input class="form-control mr-sm-2" type="search" placeholder="Buscar Medicamento" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+    </form>
+
+    <div class="text-center mb-3">
+        <a href="{% url 'adicionar_medicamento' %}" class="btn btn-primary btn-lg">Adicionar Medicamento</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Dosagem</th>
+                    <th>Forma Farmacêutica</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for medicamento in medicamentos %}
+                    <tr>
+                        <td>{{ medicamento.nome }}</td>
+                        <td>{{ medicamento.dosagem }}</td>
+                        <td>{{ medicamento.forma_farmaceutica }}</td>
+                        <td>
+                            <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'detalhe_medicamento' medicamento.id %}" class="btn btn-info btn-sm">Detalhes</a>
+                            <a href="{% url 'deletar_medicamento' medicamento.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">Nenhum medicamento encontrado.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'pagina_inicial' %}" class="btn btn-secondary btn-lg">Voltar</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-danger mb-4">Confirmar Exclusão</h2>
+
+    <div class="alert alert-warning text-center" role="alert">
+        <p>Você tem certeza de que deseja excluir o medicamento <strong>{{ medicamento.nome }}</strong>?</p>
+        <p>Essa ação é irreversível e removerá o medicamento do sistema.</p>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <form action="{% url 'deletar_medicamento' medicamento.id %}" method="post" class="mr-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">Excluir</button>
+        </form>
+        <a href="{% url 'listar_medicamentos' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</div>
+{% endblock %}

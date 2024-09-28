@@ -1,0 +1,17 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Excluir Médico</h2>
+
+    <div class="alert alert-warning">
+        <strong>Atenção!</strong> Você está prestes a excluir o médico <strong>{{ medico.nome }}</strong>. Esta ação não pode ser desfeita.
+    </div>
+
+    <form action="{% url 'deletar_medico' medico.id %}" method="post" class="text-center">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a href="{% url 'listar_medicos' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

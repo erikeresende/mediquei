@@ -1,0 +1,42 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Detalhes do Paciente</h2>
+
+    <!-- Informações do paciente -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title">{{ paciente.nome }}</h4>
+            <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento }}</p>
+            {% if age is not None %}
+                <p><strong>Idade:</strong> {{ age }} anos</p>
+            {% else %}
+                <p class="text-muted">Idade: Informação não disponível.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Seção de prontuários -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Prontuários</h4>
+            {% if prontuarios %}
+                {% for prontuario in prontuarios %}
+                    <div class="prontuario-item border rounded p-3 mb-3">
+                        <p><strong>Data:</strong> {{ prontuario.data|date:"d/m/Y" }}</p>
+                        <p><strong>Descrição:</strong> {{ prontuario.descricao }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">Este paciente não possui prontuários registrados.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Botão para voltar -->
+    <div class="mt-4">
+        <a href="{% url 'listar_pacientes' %}" class="btn btn-secondary">Voltar para a lista</a>
+    </div>
+</div>
+{% endblock %}

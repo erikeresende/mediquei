@@ -2,40 +2,42 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Lista de Receitas</h2>
-    <a href="{% url 'criar_receita' %}" class="btn btn-primary mb-3">Adicionar Nova Receita</a>
+    <h2 class="text-center mb-4">Lista de Receitas</h2>
+
+    <div class="mb-3 text-right">
+        <!-- Botão para adicionar receita -->
+        <a href="{% url 'adicionar_receita' %}" class="btn btn-success">Adicionar Receita</a>
+    </div>
+
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Medico</th>
                 <th>Paciente</th>
-                <th>Data</th>
                 <th>Medicamento</th>
+                <th>Dosagem</th>
+                <th>Instruções</th>
+                <th>Data</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for receita in receitas %}
             <tr>
-                <td>{{ receita.medico.nome }}</td><td> 
                 <td>{{ receita.paciente.nome }}</td>
-                <td>{{ prontuario.data }}</td><!-- Formato da data -->
+                <td>{{ receita.medicamento.nome }}</td>
+                <td>{{ receita.dosagem }}</td>
+                <td>{{ receita.instrucoes }}</td>
+                <td>{{ receita.data|date:"d/m/Y" }}</td>
                 <td>
-                    {% for medicamento in receita.medicamento.all %}
-                        {{ medicamento }} ({{ receita.dosagem }})<br>
-                    {% empty %}
-                        Nenhum medicamento
-                    {% endfor %}
+                    <!-- Botão para detalhes da receita -->
+                    <a href="{% url 'detalhes_receita' receita.id %}" class="btn btn-info btn-sm">Detalhes</a>
+
+                    <!-- Botão para remover receita -->
+                    <form action="{% url 'remover_receita' receita.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                    </form>
                 </td>
-                <td>
-                    <a href="{% url 'detalhes_receita' receita.id %}" class="btn btn-info btn-sm">Detalhes</a> |
-                    <a href="{% url 'editar_receita' receita.id %}" class="btn btn-warning btn-sm">Editar</a> |
-                    <a href="{% url 'deletar_receita' receita.id %}" class="btn btn-danger btn-sm">Excluir</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">Nenhuma receita encontrada.</td>
             </tr>
             {% endfor %}
         </tbody>

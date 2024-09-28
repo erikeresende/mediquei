@@ -1,0 +1,19 @@
+{% extends 'clinica/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Editar Médico: {{ medico.nome }}</h2>
+
+    <form method="post" class="bg-light p-4 rounded shadow-sm">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Atualizar</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'listar_medicos' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+{% endblock %}

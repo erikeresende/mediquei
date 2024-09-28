@@ -1,16 +1,19 @@
-<!-- clinica/templates/clinica/editar_paciente.html -->
 {% extends 'clinica/base.html' %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Editar Paciente</h2>
+    <h2 class="mb-4 text-center">Editar Paciente</h2>
 
-    <form method="post">
+    <form method="post" class="bg-light p-4 rounded shadow-sm">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Salvar</button>
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Salvar</button>
     </form>
 
-    <a href="{% url 'listar_pacientes' %}" class="btn btn-secondary mt-3">Voltar</a>
+    <div class="text-center mt-3">
+        <a href="{% url 'listar_pacientes' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 {% endblock %}
